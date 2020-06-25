@@ -7,7 +7,7 @@
 1. Накатить миграции:
 
     ```
-    ocker exec -it english-cards-with-backend_php_1 \
+    docker exec -it english-cards-with-backend_php_1 \
     php /service/bin/console doctrine:migrations:migrate
     ```
 
