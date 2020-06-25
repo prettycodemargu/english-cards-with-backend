@@ -5,11 +5,10 @@ const Card = (props) => {
 
     return(
         <div
-            key={props.card.id}
-            className={"card" + (props.card.value.overturned ? " overturned" : "")}
+            className={"card" + (props.card.overturned ? " overturned" : "")}
             onClick={() => props.turnCard(props.card.id)}
         >
-            {props.card.value.overturned ? props.card.value.translate : props.card.value.word}
+            {props.card.overturned ? props.card.translate : props.card.word}
         </div>
     )
 }

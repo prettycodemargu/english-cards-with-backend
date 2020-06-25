@@ -1,0 +1,50 @@
+version: '3'
+services:
+  nginx-front:
+    image: nginx:1.17.8
+    volumes:
+      - ./front/build:/www
+      - ./docker/nginx-front/front.conf:/etc/nginx/conf.d/front.conf
+    networks:
+      net:
+        ipv4_address: 192.168.200.2
+  nginx:
+    image: nginx:1.17.8
+    volumes:
+      - ./service:/service
+      - ./docker/nginx/service.conf:/etc/nginx/conf.d/service.conf
+    networks:
+      net:
+        ipv4_address: 192.168.200.3
+  php:
+    build:
+      context: docker/php-fpm
+    volumes:
+      - ./service:/service
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+    environment:
+      XDEBUG_CONFIG: ${XDEBUG_CONFIG}
+      PHP_IDE_CONFIG: ${PHP_IDE_CONFIG}
+    networks:
+      net:
+        ipv4_address: 192.168.200.4
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'eng_cards'
+      MYSQL_USER: 'services'
+      MYSQL_PASSWORD: '12345'
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - ./docker/db:/var/lib/mysql
+    networks:
+      net:
+        ipv4_address: 192.168.200.5
+networks:
+  net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/24

@@ -8,7 +8,7 @@ const CardsList = (props) => {
         <div>
             {props.cards.map(card => {
                 return (
-                    <Card card={card} turnCard={props.turnCard}/>
+                    <Card key={card.id} card={card} turnCard={props.turnCard}/>
                 );
             })}
         </div>

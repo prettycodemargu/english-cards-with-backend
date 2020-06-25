@@ -2,6 +2,7 @@ import React from 'react';
 import '../App.css';
 import CardsList from "../components/CardsList";
 import AddCard from "../components/AddCard";
+import CardEntity from "../services/CardEntity";
 
 class App extends React.Component {
 
@@ -16,23 +17,32 @@ class App extends React.Component {
         }
     }
 
+    componentDidMount() {
+        CardEntity.getList()
+            .then((cards) => {
+               this.setState({
+                   cards : cards
+               })
+            });
+    }
+
 
     addCard = (card) => {
         const newCard = {
-            id : 1 + this.state.id,
-            value : {
-                word : card.word.slice(),
-                translate : card.translate.slice(),
-                overturned : false
-            }
+            word : card.word.slice(),
+            translate : card.translate.slice(),
+            overturned : false
         };
 
-        this.setState({
-            id : newCard.id,
-            word : "",
-            translate : "",
-            cards : [...this.state.cards, newCard]
-        })
+        CardEntity.add(card)
+            .then((id) => {
+                newCard.id = id;
+                this.setState({
+                    word : "",
+                    translate : "",
+                    cards : [newCard, ...this.state.cards]
+                })
+            });
     }
 
     turnCard = (id) => {
@@ -42,7 +52,7 @@ class App extends React.Component {
             return card.id === id
         });
 
-        cards[index].value.overturned = !cards[index].value.overturned;
+        cards[index].overturned = !cards[index].overturned;
 
         this.setState({ cards : cards } );
     }
